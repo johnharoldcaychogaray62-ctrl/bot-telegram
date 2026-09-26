@@ -1,37 +1,32 @@
 import os
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from threading import Thread
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
-TOKEN = os.getenv("8857891537:AAEx77zuwJi_8y8XDM5TtSYte5eSNES3AnM")
+TOKEN = os.getenv("TOKEN")
 
-async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    texto = """🔥 *JOSE BLOQUEO PERU* 🔥
-*¡PRECIOS ACTUALIZADOS!*
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Hola John! Soy tu bot y ya estoy prendido 24/7 en Render!")
 
-💳 *CREDITOS:*
-• 1 credito - S/1.50
-• 10 creditos - S/13.50
-• 15 creditos - S/20.50
+def run_bot():
+    app = Application.builder().token(TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    print("Bot iniciado...")
+    app.run_polling()
 
-⏰ *RENTAS:*
-• 7 dias - S/10.00
-• 15 dias - S/18.00
-• 30 dias - S/30.00
+# Servidor web falso para que Render no lo apague
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is alive!")
 
-📲 Pago: Yape / Plin
-"""
-    botones = [
-        [InlineKeyboardButton("📢 CANAL OFICIAL", url="https://t.me/josesistema")],
-        [InlineKeyboardButton("👥 GRUPO SOPORTE", url="https://t.me/+v7x6gtLnr2gyNTgx")],
-        [InlineKeyboardButton("💬 COMPRAR AQUI @josebloqueo", url="https://t.me/josebloqueo")]
-    ]
-    await update.message.reply_text(texto, reply_markup=InlineKeyboardMarkup(botones), parse_mode="Markdown")
+def run_server():
+    port = int(os.environ.get("PORT", 10000))
+    httpd = HTTPServer(('0.0.0.0', port), Handler)
+    httpd.serve_forever()
 
-async def start(update, context):
-    await buy(update, context)
-
-app = Application.builder().token(TOKEN).build()
-app.add_handler(CommandHandler("buy", buy))
-app.add_handler(CommandHandler("start", start))
-print("Bot iniciado JOSE BLOQUEO PERU...")
-app.run_polling()
+if __name__ == "__main__":
+    Thread(target=run_server, daemon=True).start()
+    run_bot()
