@@ -2,7 +2,7 @@ import os
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("8857891537:AAEx77zuwJi_8y8XDM5TtSYte5eSNES3AnM")
 
 async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     texto = """🔥 *JOSE BLOQUEO PERU* 🔥
