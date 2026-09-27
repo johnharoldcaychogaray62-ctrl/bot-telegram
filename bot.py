@@ -1,4 +1,4 @@
- from flask import Flask
+from flask import Flask
 import threading, os
 app = Flask(__name__)
 @app.route('/')
